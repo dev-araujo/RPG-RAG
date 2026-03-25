@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package lorekeeper;
+option go_package = "./pb";
+
+service LoreKeeperRAG {
+  rpc SearchRules (RuleQuery) returns (RuleContext);
+}
+
+message RuleQuery {
+  string question = 1;
+  string campaign_id = 2;
+}
+
+message RuleContext {
+  repeated string rules = 1;
+  string source = 2;
+  float relevance_score = 3;
+}
