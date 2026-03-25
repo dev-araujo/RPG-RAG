@@ -1,0 +1,30 @@
+<aside
+  class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest dark:bg-stone-900 flex flex-col py-10 gap-6 hidden md:flex border-r border-outline-variant/30 z-50">
+  <div class="px-8 mb-4">
+    <h1 class="font-serif font-black text-[#5D1010] text-3xl tracking-tight">The Grimoire</h1>
+    <p class="font-label text-xs uppercase tracking-widest text-on-tertiary-container mt-1">Arcanist's Oracle</p>
+  </div>
+</aside>
+
+<main class="md:ml-72 flex flex-col min-h-screen relative">
+  <header
+    class="sticky top-0 z-40 bg-surface/90 backdrop-blur-sm dark:bg-stone-900 flex justify-between items-center w-full px-12 py-8 max-w-full">
+    <div class="flex items-center gap-3">
+      <span class="font-serif italic text-2xl text-[#5D1010] dark:text-red-500">Arcanist's Oracle</span>
+    </div>
+    <div class="flex items-center gap-6 text-[#5D1010] dark:text-red-400">
+    </div>
+    <div class="absolute bottom-0 left-12 right-12 bg-outline-variant h-px opacity-30"></div>
+  </header>
+
+  <div class="flex flex-1 w-full">
+    <app-master-panel class="flex-1 w-full relative"></app-master-panel>
+  </div>
+
+  <footer class="fixed bottom-4 right-12 z-50 flex justify-end w-full px-8 pointer-events-none">
+    <div class="font-mono text-[9px] uppercase tracking-[0.3em] text-stone-400">
+      Powered by: <span class="text-[#B18F4D]">Gemini Flash</span>, <span class="text-[#B18F4D]">RAGGo gRPC</span>, and
+      <span class="text-[#B18F4D]">Node.js</span>
+    </div>
+  </footer>
+</main>

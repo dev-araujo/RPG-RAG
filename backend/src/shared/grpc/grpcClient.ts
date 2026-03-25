@@ -2,7 +2,7 @@ import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import path from "path";
 
-const PROTO_PATH = path.join(__dirname, "../../../../../grpc/proto/rag_service.proto");
+const PROTO_PATH = path.join(__dirname, "../../../../grpc/proto/rag_service.proto");
 const RAG_ENGINE_ADDRESS = process.env.RAG_ENGINE_ADDRESS || "localhost:50051";
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
