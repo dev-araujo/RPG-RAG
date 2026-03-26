@@ -1,0 +1,75 @@
+<aside class="flex flex-col w-60 shrink-0 bg-surface-container-low border-r border-outline-variant/50 h-full overflow-hidden">
+
+  <!-- Header -->
+  <div class="px-4 py-4 border-b border-outline-variant/40 shrink-0">
+    <span class="font-label text-[10px] uppercase tracking-[0.25em] text-outline block mb-3">Scrolls</span>
+    <button
+      class="w-full flex items-center justify-center gap-2 py-2 border border-[#5D1010]/30 text-[#5D1010] font-label text-[10px] tracking-widest uppercase hover:bg-[#5D1010]/5 transition-colors"
+      (click)="conv.createConversation()">
+      <span class="material-symbols-outlined text-sm">add</span>
+      New Scroll
+    </button>
+  </div>
+
+  <!-- Conversation list -->
+  <div class="flex-1 overflow-y-auto custom-scrollbar">
+    @for (c of conv.conversations(); track c.id) {
+      <div
+        class="group flex items-start gap-2 px-3 py-3 cursor-pointer transition-colors border-b border-outline-variant/20"
+        [class.bg-surface-container]="c.id === conv.activeId()"
+        [class.border-l-2]="c.id === conv.activeId()"
+        [class.border-l-primary-container]="c.id === conv.activeId()"
+        (click)="conv.selectConversation(c.id)">
+
+        <span
+          class="material-symbols-outlined text-sm mt-0.5 shrink-0"
+          [class.text-primary-container]="c.id === conv.activeId()"
+          [class.text-outline]="c.id !== conv.activeId()"
+          style="font-variation-settings: 'FILL' 1;">
+          auto_stories
+        </span>
+
+        <div class="flex-1 min-w-0">
+          @if (editingId() === c.id) {
+            <input
+              class="w-full bg-transparent border-b border-[#5D1010] text-xs font-label text-on-surface focus:outline-none py-0.5 leading-tight"
+              [ngModel]="editName()"
+              (ngModelChange)="editName.set($event)"
+              (blur)="commitEdit()"
+              (keydown.enter)="commitEdit()"
+              (keydown.escape)="cancelEdit()"
+              (click)="$event.stopPropagation()"
+              autofocus />
+          } @else {
+            <p class="text-xs font-label leading-tight truncate"
+               [class.text-primary-container]="c.id === conv.activeId()"
+               [class.text-on-surface]="c.id !== conv.activeId()">
+              {{ c.name }}
+            </p>
+            <span class="text-[10px] text-outline font-label block mt-0.5">
+              {{ c.updatedAt | date:'dd/MM · HH:mm' }}
+            </span>
+          }
+        </div>
+
+        @if (editingId() !== c.id) {
+          <div class="shrink-0 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity mt-0.5">
+            <button
+              class="p-0.5 text-outline hover:text-on-surface transition-colors"
+              (click)="startEdit(c, $event)"
+              title="Rename">
+              <span class="material-symbols-outlined text-sm">edit</span>
+            </button>
+            <button
+              class="p-0.5 text-outline hover:text-error transition-colors"
+              (click)="delete(c.id, $event)"
+              title="Delete">
+              <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</aside>

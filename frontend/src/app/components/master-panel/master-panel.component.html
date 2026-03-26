@@ -1,5 +1,5 @@
-<section class="flex-1 w-full max-w-4xl mx-auto px-12 py-8 flex flex-col gap-16 custom-scrollbar overflow-y-auto mb-32"
-  style="height: calc(100vh - 12rem)" #chatScroll>
+<section class="flex-1 w-full max-w-5xl mx-auto px-8 py-6 flex flex-col gap-8 custom-scrollbar overflow-y-auto"
+  #chatScroll>
   @for (msg of messages(); track msg.timestamp) {
   @if (msg.role === 'master') {
   <div class="flex flex-col items-end animate-in fade-in duration-500">
@@ -13,13 +13,13 @@
   </div>
   } @else {
   <div class="w-full animate-in fade-in duration-700">
-    <div class="flex items-center gap-3 mb-10 border-b border-outline-variant/30 pb-4">
+    <div class="flex items-center gap-3 mb-4 border-b border-outline-variant/30 pb-3">
       <span class="material-symbols-outlined text-[#B18F4D] text-lg" data-icon="auto_stories"
         style="font-variation-settings: 'FILL' 1;">auto_stories</span>
       <span class="font-label text-xs tracking-[0.25em] text-[#B18F4D] uppercase">Codex Entry</span>
     </div>
 
-    <div class="space-y-10 text-on-surface leading-relaxed font-body">
+    <div class="space-y-4 text-on-surface leading-relaxed font-body">
       <p
         class="text-xl first-letter:text-6xl first-letter:font-headline first-letter:text-[#5D1010] first-letter:mr-4 first-letter:float-left first-letter:leading-[0.8] whitespace-pre-wrap">
         {{ msg.content }}</p>
@@ -27,7 +27,7 @@
 
     @if (msg.context) {
     <div
-      class="mt-16 pt-8 border-t border-outline-variant/30 flex flex-wrap gap-8 items-center text-outline text-[10px] uppercase tracking-widest font-label">
+      class="mt-6 pt-4 border-t border-outline-variant/30 flex flex-wrap gap-6 items-center text-outline text-[10px] uppercase tracking-widest font-label">
       <span>Source: {{ msg.context.source || 'General Knowledge' }}</span>
       <span>Rules Used: {{ msg.context.rulesUsed }}</span>
       <span>Relevance: {{ (msg.context.relevanceScore * 100).toFixed(0) }}%</span>
@@ -39,7 +39,7 @@
 
   @if (isAskingRules()) {
   <div class="w-full animate-in fade-in duration-700">
-    <div class="flex items-center gap-3 mb-10 border-b border-outline-variant/30 pb-4">
+    <div class="flex items-center gap-3 mb-4 border-b border-outline-variant/30 pb-3">
       <span class="font-label text-xs tracking-[0.25em] text-[#B18F4D] uppercase">{{ statusText() }}</span>
     </div>
     <div class="flex gap-2 items-center">
@@ -51,8 +51,8 @@
   }
 </section>
 
-<div class="fixed bottom-0 left-0 right-0 md:left-72 z-50 p-8 bg-surface">
-  <div class="max-w-4xl mx-auto w-full">
+<div class="shrink-0 px-8 py-3 bg-surface border-t border-outline-variant/20">
+  <div class="max-w-5xl mx-auto w-full">
     <div class="flex border-b border-[#5D1010] items-center">
       <input
         class="w-full bg-transparent border-none focus:ring-0 py-4 px-0 font-serif text-lg text-on-surface placeholder:text-stone-400 italic"

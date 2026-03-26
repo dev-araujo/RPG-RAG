@@ -6,23 +6,13 @@ import {
   AfterViewChecked,
   inject,
   signal,
+  effect,
+  untracked,
 } from "@angular/core";
 import { LoreService, AskResponse } from "../../services/lore.service";
-import { NgClass, SlicePipe, DatePipe } from "@angular/common";
+import { ConversationService, ChatMessage } from "../../services/conversation.service";
+import { DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-
-interface ChatMessage {
-  role: "master" | "lorekeeper";
-  content: string;
-  timestamp: Date;
-  context?: {
-    rulesUsed: number;
-    relevanceScore: number;
-    source: string;
-    retrievedRules: string[];
-  };
-  pipeline?: string;
-}
 
 @Component({
   selector: "app-master-panel",
@@ -30,27 +20,30 @@ interface ChatMessage {
   styleUrls: ["./master-panel.component.scss"],
   imports: [FormsModule, DatePipe],
 })
-export class MasterPanelComponent implements OnInit, AfterViewChecked {
+export class MasterPanelComponent implements AfterViewChecked {
   @ViewChild("chatScroll") chatScroll!: ElementRef;
 
-  campaignId = `campaign-${Date.now()}`;
   question = signal("");
   messages = signal<ChatMessage[]>([]);
   isAskingRules = signal(false);
   statusText = signal("Sistema pronto");
 
   private loreService = inject(LoreService);
+  private convService = inject(ConversationService);
 
-  ngOnInit(): void {
-    this.messages.update((msgs) => [
-      ...msgs,
-      {
-        role: "lorekeeper",
-        content:
-          "Bem-vindo, Mestre! Sou o LoreKeeper, seu oráculo de regras de D&D 5e. Pergunte-me qualquer coisa sobre as regras e eu consultarei os tomos para você.",
-        timestamp: new Date(),
-      },
-    ]);
+  constructor() {
+    // Reload messages whenever the active conversation changes
+    effect(() => {
+      const id = this.convService.activeId();
+      const conv = untracked(() =>
+        this.convService.conversations().find((c) => c.id === id)
+      );
+      if (conv) {
+        this.messages.set([...conv.messages]);
+        this.isAskingRules.set(false);
+        this.statusText.set("Sistema pronto");
+      }
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -63,20 +56,20 @@ export class MasterPanelComponent implements OnInit, AfterViewChecked {
 
     this.question.set("");
 
+    // Auto-name the conversation on first question
+    this.convService.autoName(q);
+
     this.messages.update((msgs) => [
       ...msgs,
-      {
-        role: "master",
-        content: q,
-        timestamp: new Date(),
-      },
+      { role: "master", content: q, timestamp: new Date() },
     ]);
+    this.convService.saveMessages(this.messages());
 
     this.isAskingRules.set(true);
     this.statusText.set("Consultando oráculo...");
 
     this.loreService
-      .ask({ question: q, campaignId: this.campaignId })
+      .ask({ question: q, campaignId: this.convService.activeId() })
       .subscribe({
         next: (response: AskResponse) => {
           this.messages.update((msgs) => [
@@ -89,6 +82,7 @@ export class MasterPanelComponent implements OnInit, AfterViewChecked {
               pipeline: response.pipeline,
             },
           ]);
+          this.convService.saveMessages(this.messages());
           this.isAskingRules.set(false);
           this.statusText.set("Sistema pronto");
         },
@@ -101,6 +95,7 @@ export class MasterPanelComponent implements OnInit, AfterViewChecked {
               timestamp: new Date(),
             },
           ]);
+          this.convService.saveMessages(this.messages());
           this.isAskingRules.set(false);
           this.statusText.set("Erro no sistema");
         },
